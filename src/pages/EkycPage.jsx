@@ -1,9 +1,14 @@
 import React, { useContext, useState } from "react";
 import SidebarMenu from "../components/SidebarMenu";
 import AuthContext from "../context/AuthContext";
+import FrontImageContext from "../context/FrontImageContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const EkycPage = () => {
   const [token, setToken] = useContext(AuthContext);
+  const [frontImg, setFrontImg] = useContext(FrontImageContext);
 
   const [img1, setImg1] = useState();
   const [img2, setImg2] = useState();
@@ -11,14 +16,31 @@ const EkycPage = () => {
   const [infoImg, setInfoImg] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState()
+
+  const navigate = useNavigate();
 
   function capitalizeEachWord(str) {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   const handleImageUpload = async (e) => {
     e.preventDefault();
     if (img1 && img2) {
+      const file = img1;
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        localStorage.setItem("frontImg", reader.result);
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+
       const api_key = "maitrongjthuaanf";
       const tokenFormData = new FormData();
       tokenFormData.append("api_key", api_key);
@@ -81,7 +103,6 @@ const EkycPage = () => {
       date_of_issuance: infoImg[0].info.issue_date,
       place_of_residence: infoImg[0].info.issued_at,
     };
-    console.log(userSave)
 
     const requestOptions = {
       method: "POST",
@@ -98,8 +119,16 @@ const EkycPage = () => {
 
     const data = await response.json();
 
-    if (data) {
-      console.log(data);
+    if (data.status) {
+      toast.success("User saved!", {
+        position: "top-center",
+      });
+      setStatus(true)
+    } else {
+      toast.warning("User already registed information Ekyc", {
+        position: "top-center",
+      });
+      setStatus(false)
     }
   };
 
@@ -271,7 +300,7 @@ const EkycPage = () => {
 
               <p className="text-2xl text-black dark:text-gray-500 w-5/6 h-full mt-20">
                 {!loading && infoImg ? (
-                  <div className="overflow-auto h-[27rem] shadow-md sm:rounded-lg">
+                  <div className="overflow-auto h-[27.8rem] shadow-md sm:rounded-lg">
                     <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
                       <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
                         <tr>
@@ -496,8 +525,35 @@ const EkycPage = () => {
               </p>
             </div>
           </div>
+          {status ? (
+            <div className="flex items-center justify-center h-5 mb-4 rounded bg-gray-50 dark:bg-gray-800">
+              <p className="text-2xl text-gray-400 dark:text-gray-500">
+                <button
+                  onClick={() => {
+                    navigate("/face-matching");
+                  }}
+                  className="w-full mt-5 place-content-center text-white  bg-green-700  hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+                >
+                  Go to Face Matching
+                </button>
+              </p>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
+      <ToastContainer
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 };

@@ -1,11 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
+import FrontImageContext from "../context/FrontImageContext";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { Home, CreditCard, StickyNote, LogIn, BookUser } from "lucide-react";
+import { Home, CreditCard, StickyNote, LogIn, BookUser, ScanFace } from "lucide-react";
 
 const SidebarMenu = () => {
   const [token, setToken] = useContext(AuthContext);
+  const [frontImg, setFrontImg] = useContext(FrontImageContext);
+
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -21,6 +24,11 @@ const SidebarMenu = () => {
     // e.preventDefault()
     localStorage.removeItem("authToken");
     setToken(null);
+
+    localStorage.removeItem("frontImg");
+    setFrontImg(null);
+
+
     navigate("/");
   };
 
@@ -151,14 +159,23 @@ const SidebarMenu = () => {
                   <span className="flex-1 ms-3 whitespace-nowrap">EKYC</span>
                 </a>
               </li>
+              <li>
+                <a
+                  href="/face-matching"
+                  className={`flex items-center p-2 rounded-lg text-black hover:scale-110 group ${activePage === "/face-matching" && "bg-gray-300"}`}
+                >
+                  <ScanFace />
+                  <span className="flex-1 ms-3 whitespace-nowrap">Face Matching</span>
+                </a>
+              </li>
 
               <li>
                 <a
-                  href="#"
-                  className="flex items-center p-2 text-black rounded-lg hover:scale-110 group "
+                  href="/business-license"
+                  className={`flex items-center p-2 rounded-lg text-black hover:scale-110 group ${activePage === "/business-license" && "bg-gray-300"}`}
                 >
                   <StickyNote />
-                  <span className="flex-1 ms-3 whitespace-nowrap">Savis</span>
+                  <span className="flex-1 ms-3 whitespace-nowrap">Business License</span>
                 </a>
               </li>
               {!token ? (
