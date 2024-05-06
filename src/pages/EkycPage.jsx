@@ -8,7 +8,13 @@ const EkycPage = () => {
   const [img1, setImg1] = useState();
   const [img2, setImg2] = useState();
 
+  const [infoImg, setInfoImg] = useState(null);
+
   const [loading, setLoading] = useState(false);
+
+  function capitalizeEachWord(str) {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
 
   const handleImageUpload = async (e) => {
     e.preventDefault();
@@ -50,16 +56,50 @@ const EkycPage = () => {
         );
 
         const ekycData = await ekycResponse.json();
+        const infoEkyc = ekycData.data;
 
         if (ekycData) {
-          console.log(ekycData);
-          // Handle ekycData as needed
+          setInfoImg(infoEkyc);
         }
       } catch (error) {
         console.error("Error:", error);
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const handleSaveUser = async () => {
+    const userSave = {
+      fullname: infoImg[1].info.name,
+      dob: infoImg[1].info.dob,
+      card_id: infoImg[1].info.id,
+      nationality: capitalizeEachWord(infoImg[1].info.nationality),
+      sex: capitalizeEachWord(infoImg[1].info.gender),
+      place_of_issuance: infoImg[1].info.hometown,
+      place_of_origin: infoImg[1].info.address,
+      date_of_issuance: infoImg[0].info.issue_date,
+      place_of_residence: infoImg[0].info.issued_at,
+    };
+    console.log(userSave)
+
+    const requestOptions = {
+      method: "POST",
+      body: JSON.stringify(userSave),
+      headers: {
+        Authorization: "Bearer " + token.access_token,
+      },
+    };
+
+    const response = await fetch(
+      "http://125.212.225.71:8000/mirae/save/profile/ekyc",
+      requestOptions
+    );
+
+    const data = await response.json();
+
+    if (data) {
+      console.log(data);
     }
   };
 
@@ -70,11 +110,11 @@ const EkycPage = () => {
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
           <div className="grid grid-cols-2 gap-4 mb-4 mt-6">
             {/* EKYC */}
-            <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2">
-              <p className="text-2xl text-black dark:text-gray-500 w-5/6 ">
-                <div className="text-xl font-bold bg-gradient-to-r from-greenlogo-100  to-orangelogo-100 text-transparent bg-clip-text mb-4">
-                  EKYC
-                </div>
+            <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
+              <div className="text-xl font-bold bg-gradient-to-r from-greenlogo-100  to-orangelogo-100 text-transparent bg-clip-text mb-4 absolute top-0 left-10">
+                EKYC
+              </div>
+              <p className="text-2xl text-black dark:text-gray-500 w-5/6 mt-10">
                 <form className="w-full" onSubmit={handleImageUpload}>
                   <div>
                     <div className="flex items-center justify-center w-full">
@@ -224,8 +264,236 @@ const EkycPage = () => {
             </div>
 
             {/* OCR */}
-            <div className="flex items-center justify-center rounded bg-gray-50 h-96 dark:bg-gray-800 border-dashed border-2">
-              <p className="text-2xl text-gray-400 dark:text-gray-500">OCR</p>
+            <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
+              <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
+                OCR
+              </div>
+
+              <p className="text-2xl text-black dark:text-gray-500 w-5/6 h-full mt-20">
+                {!loading && infoImg ? (
+                  <div className="overflow-auto h-[27rem] shadow-md sm:rounded-lg">
+                    <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
+                      <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
+                        <tr>
+                          <th scope="col" className="px-6 py-3">
+                            Info
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Data
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Confident Level
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            ID
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.id}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[1].info.id_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(infoImg[1].info.id_confidence * 10000) /
+                              100}
+                            %
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Name
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.name}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[1].info.name_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[1].info.name_confidence * 10000
+                            ) / 100}
+                            %
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            DOB
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.dob}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[1].info.id_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[1].info.dob_confidence * 10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Gender
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.gender}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black  font-bold underline ${
+                              infoImg[1].info.gender_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[1].info.gender_confidence * 10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Address
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.address}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[1].info.address_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[1].info.address_confidence * 10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Home town
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[1].info.hometown}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[1].info.hometown_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[1].info.hometown_confidence * 10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Ethnicity
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[0].info.ethnicity}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[0].info.ethnicity_confidence > 0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[0].info.ethnicity_confidence * 10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                          >
+                            Identification Sign
+                          </th>
+                          <td className="px-6 py-4 text-black">
+                            {infoImg[0].info.identification_sign}
+                          </td>
+                          <td
+                            className={`px-6 py-4 text-black font-bold underline ${
+                              infoImg[0].info.identification_sign_confidence >
+                              0.75
+                                ? "text-green-700"
+                                : "text-red-700"
+                            }`}
+                          >
+                            {Math.round(
+                              infoImg[0].info.identification_sign_confidence *
+                                10000
+                            ) / 100}{" "}
+                            %
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-4xl flex justify-center items-center font-bold my-36">
+                    No data to display
+                  </div>
+                )}
+                {!loading && infoImg ? (
+                  <button
+                    onClick={handleSaveUser}
+                    className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-greenlogo-100 to-orangelogo-100 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+                  >
+                    Save
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+              </p>
             </div>
           </div>
         </div>
