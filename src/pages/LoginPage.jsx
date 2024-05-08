@@ -51,7 +51,7 @@ const LoginPage = () => {
         >
           <img
             className="w-60 h-40 mr-3"
-            src="./assets/img/logos/logo_its.png"
+            src="./assets/img/logos/vt_logo1.png"
             alt="logo"
           />
         </a>
@@ -105,7 +105,7 @@ const LoginPage = () => {
               </div>
               <button
                 type="submit"
-                className="w-full text-white bg-gradient-to-br from-greenlogo-100 to-orangelogo-100 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                className="w-full text-white bg-gradient-to-br from-red-500 to-red-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               >
                 Sign in
               </button>

@@ -140,7 +140,7 @@ const EkycPage = () => {
           <div className="grid grid-cols-2 gap-4 mb-4 mt-6">
             {/* EKYC */}
             <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
-              <div className="text-xl font-bold bg-gradient-to-r from-greenlogo-100  to-orangelogo-100 text-transparent bg-clip-text mb-4 absolute top-0 left-10">
+              <div className="text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 text-transparent bg-clip-text mb-4 absolute top-0 left-10">
                 EKYC
               </div>
               <p className="text-2xl text-black dark:text-gray-500 w-5/6 mt-10">
@@ -261,7 +261,7 @@ const EkycPage = () => {
                   {!loading ? (
                     <button
                       type="submit"
-                      className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-greenlogo-100 to-orangelogo-100 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+                      className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-red-500 to-red-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
                     >
                       Upload
                     </button>
@@ -270,7 +270,7 @@ const EkycPage = () => {
                       <div role="status">
                         <svg
                           aria-hidden="true"
-                          className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-orangelogo-100"
+                          className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-red-200"
                           viewBox="0 0 100 101"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +294,7 @@ const EkycPage = () => {
 
             {/* OCR */}
             <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
-              <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
+              <div className="text-xl font-bold bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
                 OCR
               </div>
 
@@ -302,7 +302,7 @@ const EkycPage = () => {
                 {!loading && infoImg ? (
                   <div className="overflow-auto h-[27.8rem] shadow-md sm:rounded-lg">
                     <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
-                      <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
+                      <thead className="sticky top-0 text-xs text-white uppercase bg-red-500 border-b border-gray-500 dark:text-white">
                         <tr>
                           <th scope="col" className="px-6 py-3">
                             Info
@@ -316,7 +316,7 @@ const EkycPage = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -338,7 +338,7 @@ const EkycPage = () => {
                             %
                           </td>
                         </tr>
-                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -361,7 +361,7 @@ const EkycPage = () => {
                             %
                           </td>
                         </tr>
-                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -384,7 +384,7 @@ const EkycPage = () => {
                             %
                           </td>
                         </tr>
-                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -407,7 +407,7 @@ const EkycPage = () => {
                             %
                           </td>
                         </tr>
-                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -431,7 +431,7 @@ const EkycPage = () => {
                           </td>
                         </tr>
 
-                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -455,7 +455,7 @@ const EkycPage = () => {
                           </td>
                         </tr>
 
-                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-100 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -479,7 +479,7 @@ const EkycPage = () => {
                           </td>
                         </tr>
 
-                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                        <tr className="border-b border-gray-500 bg-gray-200 hover:bg-red-200 ">
                           <th
                             scope="row"
                             className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
@@ -515,7 +515,7 @@ const EkycPage = () => {
                 {!loading && infoImg ? (
                   <button
                     onClick={handleSaveUser}
-                    className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-greenlogo-100 to-orangelogo-100 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+                    className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-red-500 to-red-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
                   >
                     Save
                   </button>
@@ -528,14 +528,7 @@ const EkycPage = () => {
           {status ? (
             <div className="flex items-center justify-center h-5 mb-4 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">
-                <button
-                  onClick={() => {
-                    navigate("/face-matching");
-                  }}
-                  className="w-full mt-5 place-content-center text-white  bg-green-700  hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
-                >
-                  Go to Face Matching
-                </button>
+              <a href="/face-matching" className="w-full mt-5 place-content-center text-white  bg-green-700  hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Go to Face Matching</a>
               </p>
             </div>
           ) : (

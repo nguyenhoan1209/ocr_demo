@@ -1,10 +1,13 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import FrontImageContext from "./FrontImageContext";
 
 const AuthContext = createContext();
 
 export default AuthContext;
 
 export const AuthProvider = (props) => {
+  
+  
   const [token, setToken] = useState(() =>
     localStorage.getItem("authToken")
       ? JSON.parse(localStorage.getItem("authToken"))

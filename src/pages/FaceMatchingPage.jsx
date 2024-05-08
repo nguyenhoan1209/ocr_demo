@@ -18,6 +18,7 @@ const FaceMatchingPage = () => {
   const handleImageUpload = async (e) => {
     e.preventDefault();
     const dataUrl = frontImg;
+    console.log(dataUrl)
 
     // Convert data URL to Blob
     const parts = dataUrl.split(";base64,");
@@ -104,7 +105,7 @@ const FaceMatchingPage = () => {
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
           <div className="grid grid-cols-2 gap-4 mb-4 mt-6">
             <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
-              <div className="text-xl font-bold bg-gradient-to-r from-greenlogo-100  to-orangelogo-100 text-transparent bg-clip-text mb-4 absolute top-0 left-10">
+              <div className="text-xl font-bold bg-gradient-to-r from-red-500 to-red-600 text-transparent bg-clip-text mb-4 absolute top-0 left-10">
                 Face Matching
               </div>
               <p className="text-2xl text-black dark:text-gray-500 w-5/6 mt-10">
@@ -169,7 +170,7 @@ const FaceMatchingPage = () => {
                   {!loading ? (
                     <button
                       type="submit"
-                      className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-greenlogo-100 to-orangelogo-100 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+                      className="w-full mt-10 place-content-center text-white bg-gradient-to-br from-red-500 to-red-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
                     >
                       Verify
                     </button>
@@ -178,7 +179,7 @@ const FaceMatchingPage = () => {
                       <div role="status">
                         <svg
                           aria-hidden="true"
-                          className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-orangelogo-100"
+                          className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-red-600"
                           viewBox="0 0 100 101"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +202,7 @@ const FaceMatchingPage = () => {
             </div>
 
             <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
-              <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
+              <div className="text-xl font-bold bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
                 Result
               </div>
 

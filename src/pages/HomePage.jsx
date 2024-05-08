@@ -68,7 +68,7 @@ const HomePage = () => {
                   <div className="p-5">
                     <a href="#">
                       <h6 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        Nhận diện ký tự quang học
+                        So khớp khuôn mặt
                       </h6>
                     </a>
                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
@@ -91,7 +91,7 @@ const HomePage = () => {
                   <div className="p-5">
                     <a href="#">
                       <h6 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        Nhận diện ký tự quang học
+                        Nhận diện ký tự GPKD
                       </h6>
                     </a>
                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
@@ -114,7 +114,7 @@ const HomePage = () => {
                   <div className="p-5">
                     <a href="#">
                       <h6 className="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        Nhận diện ký tự quang học
+                        Xác thực giấy đăng ký
                       </h6>
                     </a>
                     <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">

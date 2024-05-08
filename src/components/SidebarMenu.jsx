@@ -63,13 +63,11 @@ const SidebarMenu = () => {
                 </button>
                 <a href="#" className="flex ms-2 md:me-24">
                   <img
-                    src="./assets/img/logos/logo_its_1.png"
-                    className="h-8 me-3"
-                    alt="FlowBite Logo"
+                    src="./assets/img/logos/vt_logo1.png"
+                    className="h-10 w-20 me-3"
+                    alt="Logo"
                   />
-                  <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                    InterITS
-                  </span>
+                  
                 </a>
               </div>
               <div className="flex items-center">
