@@ -171,6 +171,7 @@ const BusinessLicensePage = () => {
       }
     }
   };
+  
 
   const handleVerifyRepresentative = () => {
     if (tableRepData.ekyc) {
