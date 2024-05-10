@@ -18,7 +18,7 @@ const HomePage = () => {
                   <div className="flex items-center justify-center h-30 rounded  dark:bg-gray-800">
                     <img
                       className="object-fill w-full h-96"
-                      src="./assets/img/logos/logo_its.png"
+                      src="./assets/img/logos/vt_logo1.png"
                       alt="logo"
                     />
                   </div>

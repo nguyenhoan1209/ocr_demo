@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import SidebarMenu from "../components/SidebarMenu";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
+import AuthContext from "../context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +13,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 const BusinessLicensePage = () => {
+  const [token, setToken] = useContext(AuthContext);
   const [file, setFile] = useState(null);
   const [viewFile, setViewFile] = useState(null);
   const [pdfFile, setPdfFile] = useState();
@@ -19,6 +21,7 @@ const BusinessLicensePage = () => {
   const [infoLicense, setInfoLicense] = useState(null);
 
   const [tableData, setTableData] = useState(null);
+  const [tableRepData, setTableRepData] = useState(null);
 
   const newPlugin = defaultLayoutPlugin();
   const fileType = ["application/pdf"];
@@ -103,39 +106,93 @@ const BusinessLicensePage = () => {
 
   const handleShowTable = async (e) => {
     try {
-      
       const requestOptions = {
         method: "GET",
-      }
-      
-      const response = await fetch(`https://api.vietqr.io/v2/business/${infoLicense[0].info.business_code}`,
+      };
+
+      const response = await fetch(
+        `https://api.vietqr.io/v2/business/${infoLicense[0].info.business_code}`,
         requestOptions
       );
-      const data = await response.json()
-      
+      const data = await response.json();
 
       if (data) {
-        if (data.code == "00"){
-        setTableData(data)
-        if(tableData.data.id == infoLicense[0].info.business_code){
-          toast.success("Legal!", {
+        if (data.code == "00") {
+          setTableData(data);
+        }else{
+          toast.error("Not found!", {
             position: "top-center",
           })
-        }else{
-          setTableData(null)
-          toast.warning("Illegal!", {
-            position: "top-center"
-          })
-        }}else{
-          toast.error("Not found!", {
-            position: "top-center"
-          })
-
         }
       } else {
+        setTableData(null);
+      }
+
+      const requestOptionsRep = {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token.access_token,
+        },
+      };
+
+      const responseRep = await fetch(
+        "http://125.212.225.71:8000/mirae/get/users/profile",
+        requestOptionsRep
+      );
+
+      const dataRep = await responseRep.json();
+      if (dataRep) {
+        setTableRepData(dataRep);
+      } else {
+        setTableRepData(null);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleVerifyLincense = () => {
+    if (tableData.code == "00") {
+      if (tableData.data.id == infoLicense[0].info.business_code) {
+        if (tableData.data.id == infoLicense[0].info.business_code) {
+          toast.success("Legal!", {
+            position: "top-center",
+          });
+        } else {
+          setTableData(null);
+          toast.warning("Illegal!", {
+            position: "top-center",
+          });
+        }
+      } else {
+        toast.error("Not found!", {
+          position: "top-center",
+        });
+      }
+    }
+  };
+
+  const handleVerifyRepresentative = () => {
+    if (tableRepData.ekyc) {
+      if (tableData.data.id == infoLicense[0].info.business_code) {
+        if (
+          tableRepData.infor_Ekyc.card_id ==
+          infoLicense[0].info.list_of_legal_representatives[0]
+            .representative_name
+        ) {
+          toast.success("Representative Match!", {
+            position: "top-center",
+          });
+        } else {
+          toast.warning("Representative Doesnt Match!", {
+            position: "top-center",
+          });
+        }
+      } else {
+        toast.error("Not found!", {
+          position: "top-center",
+        });
+      }
     }
   };
 
@@ -150,37 +207,33 @@ const BusinessLicensePage = () => {
                 Upload Your Licence
               </div>
               <p className="text-2xl text-black dark:text-gray-500 w-5/6 mt-10">
-                <form  onSubmit={handleSubmit}>
-                  
-                    <div className="grid grid-cols-8">
-                      <input
-                        className="col-span-7 w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                        id="large_size"
-                        type="file"
-                        onChange={(e) => {
-                          handleFileChange(e);
-                        }}
-                      />
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-8">
+                    <input
+                      className="col-span-7 w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                      id="large_size"
+                      type="file"
+                      onChange={(e) => {
+                        handleFileChange(e);
+                      }}
+                    />
                     <button
                       type="submit"
                       className="w-full flex items-center justify-center place-content-center text-white bg-green-700 font-medium rounded-lg text-sm text-center  "
                     >
                       Submit
                     </button>
-                    </div>
+                  </div>
                 </form>
                 <div className="h-[27rem] w-full mt-10">
-                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                      {viewFile && (
-                        <>
-                          <Viewer
-                            fileUrl={viewFile}
-                            plugins={[]}
-                          ></Viewer>
-                        </>
-                      )}
-                    </Worker>
-                  </div>
+                  <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                    {viewFile && (
+                      <>
+                        <Viewer fileUrl={viewFile} plugins={[]}></Viewer>
+                      </>
+                    )}
+                  </Worker>
+                </div>
 
                 <div>
                   {!loading && pdfFile ? (
@@ -213,8 +266,6 @@ const BusinessLicensePage = () => {
                       </div>
                     </div>
                   )}
-
-                  
                 </div>
               </p>
             </div>
@@ -227,7 +278,6 @@ const BusinessLicensePage = () => {
               <p className="text-2xl text-black dark:text-gray-500 w-11/12 mt-10">
                 {!loading && infoLicense ? (
                   <div>
-                    
                     <div className="overflow-auto h-[31rem] shadow-md sm:rounded-lg w-full">
                       <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
                         <thead className="sticky top-0 text-xs text-white uppercase bg-red-500 border-b border-gray-500 dark:text-white">
@@ -617,11 +667,9 @@ const BusinessLicensePage = () => {
                       onClick={handleShowTable}
                       className="w-full mt-10 place-content-center text-white bg-green-700 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  "
                     >
-                      Verify 
+                      Verify
                     </button>
                   </div>
-
-                  
                 ) : (
                   <div className="text-4xl flex justify-center items-center font-bold my-36">
                     No data to display
@@ -630,97 +678,174 @@ const BusinessLicensePage = () => {
               </p>
             </div>
           </div>
-          
 
-          {tableData ? (
-            <div className="grid grid-cols-1 gap-4 mb-4 mt-10">
-            <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
-              <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
-                Data Register with government
-              </div>
+          {tableData && tableRepData ? (
+            <div className="grid grid-cols-2 gap-4 mb-4 mt-10">
+              <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
+                <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
+                  Data License
+                </div>
 
-              <p className="text-2xl text-black dark:text-gray-500 w-11/12 mt-10">
-                {!loading && infoLicense ? (
-                  <div>
-                    
-                    <div className="overflow-auto h-[16rem] shadow-md sm:rounded-lg w-full">
-                      <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
-                        <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
-                          <tr>
-                            <th scope="col" className="px-6 py-3">
-                              Info
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                              Data
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
-                            >
-                              Business code
-                            </th>
-                            <td className="px-6 py-4 text-black">
-                              {tableData.data.id}
-                            </td>
-
-                          </tr>
-                          <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
-                            >
-                              Company Name
-                            </th>
-                            <td className="px-6 py-4 text-black">
-                              {tableData.data.name}
-                            </td>
-                            
-                          </tr>
-                          <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
-                            >
-                              English Name
-                            </th>
-                            <td className="px-6 py-4 text-black">
-                              {tableData.data.internationalName}
-                            </td>
-                            
-                          </tr>
-                          <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
-                            >
-                              Address
-                            </th>
-                            <td className="px-6 py-4 text-black">
-                              {tableData.data.address}
-                            </td>
-                            
-                          </tr>
-
-                        </tbody>
-                      </table>
+                <p className="text-2xl text-black dark:text-gray-500 w-11/12 mt-10">
+                  {!loading && infoLicense ? (
+                    <div>
+                      <div className="overflow-auto h-[16rem] shadow-md sm:rounded-lg w-full">
+                        <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
+                          <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
+                            <tr>
+                              <th scope="col" className="px-6 py-3">
+                                Info
+                              </th>
+                              <th scope="col" className="px-6 py-3">
+                                Data
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Business code
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableData.data.id}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Company Name
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableData.data.name}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                English Name
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableData.data.internationalName}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Address
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableData.data.address}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    
-                  </div>
+                  ) : (
+                    <div className="text-4xl flex justify-center items-center font-bold my-36">
+                      No data to display
+                    </div>
+                  )}
+                  <button
+                    onClick={handleVerifyLincense}
+                    className="w-full mt-10 mb-3 place-content-center text-white bg-green-700 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  "
+                  >
+                    Verify DataLicense
+                  </button>
+                </p>
+              </div>
+              <div className="flex items-center justify-center rounded bg-gray-50 dark:bg-gray-800 border-dashed border-2 relative">
+                <div className="text-xl font-bold bg-gradient-to-r from-orangelogo-100  to-greenlogo-100 text-transparent bg-clip-text mb-4 absolute left-10 top-0 ">
+                  Data Representatives
+                </div>
 
-                  
-                ) : (
-                  <div className="text-4xl flex justify-center items-center font-bold my-36">
-                    No data to display
-                  </div>
-                )}
-              </p>
+                <p className="text-2xl text-black dark:text-gray-500 w-11/12 mt-10">
+                  {!loading && infoLicense ? (
+                    <div>
+                      <div className="overflow-auto h-[16rem] shadow-md sm:rounded-lg w-full">
+                        <table className="h-full text-sm text-left rtl:text-right text-blue-100 dark:text-blue-100">
+                          <thead className="text-xs text-white uppercase bg-greenlogo-100 border-b border-gray-500 dark:text-white">
+                            <tr>
+                              <th scope="col" className="px-6 py-3">
+                                Info
+                              </th>
+                              <th scope="col" className="px-6 py-3">
+                                Data
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Representative code
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableRepData.infor_Ekyc.card_id}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Representative Name
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableRepData.infor_Ekyc.fullname}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-200 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Representative DOB
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableRepData.infor_Ekyc.dob}
+                              </td>
+                            </tr>
+                            <tr className="border-b border-gray-500 bg-gray-100 hover:bg-orangelogo-50 ">
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-black whitespace-nowrap dark:text-blue-100"
+                              >
+                                Address
+                              </th>
+                              <td className="px-6 py-4 text-black">
+                                {tableRepData.infor_Ekyc.place_of_origin}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-4xl flex justify-center items-center font-bold my-36">
+                      No data to display
+                    </div>
+                  )}
+                  <button
+                    onClick={handleVerifyRepresentative}
+                    className="w-full mt-10 mb-3 place-content-center text-white bg-green-700 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  "
+                  >
+                    Verify Data Representative
+                  </button>
+                </p>
+              </div>
             </div>
-            
-          </div>
           ) : (
             <div></div>
           )}
